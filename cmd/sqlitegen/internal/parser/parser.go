@@ -23,8 +23,10 @@ var (
 		`^SQLITE_API\s+(?:SQLITE_DEPRECATED\s+)?(?:SQLITE_EXPERIMENTAL\s+)?([\w\s\*]+?)\s*(\*?)\s*(sqlite3[\w]*)\s*\(([^)]*(?:\([^)]*\)[^)]*)*)\)\s*;$`,
 	)
 
-	// defineRE matches #define SQLITE_NAME value  (no macro with parens in name or backslash continuation)
-	defineRE = regexp.MustCompile(`^#define\s+(SQLITE_\w+)\s+([^\\(][^\s]*)`)
+	// defineRE matches #define SQLITE_NAME value
+	// Captures: simple tokens, parenthesized expressions, and quoted strings.
+	// Excludes: function-like macros (name followed by '(') and backslash continuations.
+	defineRE = regexp.MustCompile(`^#define\s+(SQLITE_\w+)\s+(\(.*\)|"[^"]*"|[^\s(\\]+)`)
 
 	// typedefRE matches typedef struct name name;
 	typedefRE = regexp.MustCompile(`^typedef\s+struct\s+(\w+)\s+(\w+)\s*;$`)
