@@ -49,15 +49,86 @@ rows, _ := stmt.Query(42)
 
 ### Testing with mocks
 
-```go
-import "github.com/bnema/purego-sqlite/sqlite/mocks"
+The package ships pre-generated [Mockery v3](https://vektra.github.io/mockery/) mocks for all public interfaces. Your code accepts `sqlite.DB` (an interface), and in tests you swap in a mock — no `libsqlite3.so` needed.
 
-func TestMyService(t *testing.T) {
-    db := mocks.NewMockDB(t)
-    db.EXPECT().Query("SELECT ...").Return(mockRows, nil)
-    svc := myservice.New(db)
+**Step 1: Accept the interface in your code**
+
+```go
+package userrepo
+
+import "github.com/bnema/purego-sqlite/sqlite"
+
+type UserRepo struct {
+    db sqlite.DB
+}
+
+func New(db sqlite.DB) *UserRepo {
+    return &UserRepo{db: db}
+}
+
+func (r *UserRepo) GetName(id int) (string, error) {
+    rows, err := r.db.Query("SELECT name FROM users WHERE id = ?", id)
+    if err != nil {
+        return "", err
+    }
+    defer rows.Close()
+    if !rows.Next() {
+        return "", fmt.Errorf("user %d not found", id)
+    }
+    var name string
+    if err := rows.Scan(&name); err != nil {
+        return "", err
+    }
+    return name, nil
 }
 ```
+
+**Step 2: Mock it in tests**
+
+```go
+package userrepo_test
+
+import (
+    "testing"
+
+    "github.com/bnema/purego-sqlite/sqlite/mocks"
+    "github.com/stretchr/testify/require"
+)
+
+func TestGetName(t *testing.T) {
+    // Create mocks — expectations are auto-asserted on cleanup
+    mockDB := mocks.NewMockDB(t)
+    mockRows := mocks.NewMockRows(t)
+
+    // Set up the call chain
+    mockDB.EXPECT().
+        Query("SELECT name FROM users WHERE id = ?", 42).
+        Return(mockRows, nil)
+    mockRows.EXPECT().Next().Return(true)
+    mockRows.EXPECT().Scan().RunAndReturn(func(dest ...any) error {
+        *(dest[0].(*string)) = "Alice"
+        return nil
+    })
+    mockRows.EXPECT().Close().Return(nil)
+
+    // Test
+    repo := userrepo.New(mockDB)
+    name, err := repo.GetName(42)
+    require.NoError(t, err)
+    require.Equal(t, "Alice", name)
+}
+```
+
+**Available mocks** in `github.com/bnema/purego-sqlite/sqlite/mocks`:
+
+| Mock | Interface | Key methods |
+|---|---|---|
+| `MockDB` | `sqlite.DB` | `Prepare`, `Exec`, `Query`, `Close` |
+| `MockStmt` | `sqlite.Stmt` | `Exec`, `Query`, `NumInput`, `Close` |
+| `MockRows` | `sqlite.Rows` | `Next`, `Scan`, `Columns`, `Err`, `Close` |
+| `MockResult` | `sqlite.Result` | `LastInsertId`, `RowsAffected` |
+
+All mocks support `.EXPECT()` for type-safe expectations and `.On()`/`.Return()` for classic testify style.
 
 > **Note:** The driver registers as `sqlite3`, the same name as mattn/go-sqlite3.
 > Do not import both in the same binary.
