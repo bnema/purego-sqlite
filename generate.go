@@ -1,4 +1,4 @@
-//go:generate go run ./cmd/sqlitegen --header /usr/include/sqlite3.h --output-dir .
+//go:generate sh -c "go run ./cmd/sqlitegen --header ${SQLITE_HEADER:-/usr/include/sqlite3.h} --output-dir ."
 //go:generate mockery
 
-package puregoSqlite
+package puregosqlite

@@ -1,6 +1,6 @@
 # purego-sqlite
 
-Pure Go SQLite bindings via [purego](https://github.com/bnema/purego). No cgo required.
+Pure Go SQLite bindings via [purego](https://github.com/ebitengine/purego). No cgo required.
 
 Dynamically links to your system's `libsqlite3.so` at runtime.
 
@@ -24,6 +24,9 @@ Dynamically links to your system's `libsqlite3.so` at runtime.
     import "github.com/bnema/purego-sqlite/sqlite"
 
     db, err := sqlite.Open("./my.db")
+
+> **Note:** This driver registers as `sqlite3`, the same name as mattn/go-sqlite3.
+> Do not import both packages in the same binary.
 
 ## Requirements
 

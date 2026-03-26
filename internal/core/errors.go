@@ -33,3 +33,19 @@ type Error struct {
 func (e *Error) Error() string {
 	return fmt.Sprintf("sqlite3: %s (%d)", e.Msg, e.Code)
 }
+
+// Is reports whether the error has the given SQLite result code.
+func (e *Error) Is(target error) bool {
+	if t, ok := target.(*Error); ok {
+		return e.Code == t.Code
+	}
+	return false
+}
+
+// Common SQLite error sentinels for use with errors.Is.
+var (
+	ErrBusy     = &Error{Code: 5, Msg: "database is locked"}
+	ErrLocked   = &Error{Code: 6, Msg: "database table is locked"}
+	ErrNoMem    = &Error{Code: 7, Msg: "out of memory"}
+	ErrReadonly = &Error{Code: 8, Msg: "attempt to write a readonly database"}
+)

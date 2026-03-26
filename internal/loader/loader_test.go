@@ -8,6 +8,7 @@ import (
 )
 
 func TestOpen_Default(t *testing.T) {
+	t.Setenv("SQLITE_LIB_PATH", "")
 	handle, err := Open()
 	require.NoError(t, err)
 	assert.NotZero(t, handle)
