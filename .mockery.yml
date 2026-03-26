@@ -1,0 +1,15 @@
+template: testify
+include-auto-generated: true
+packages:
+  github.com/bnema/purego-sqlite/internal/ports/in:
+    config:
+      dir: "sqlite/mocks"
+      filename: "mock_{{.InterfaceName | snakecase}}.go"
+      pkgname: "mocks"
+      all: true
+  github.com/bnema/purego-sqlite/internal/ports/out:
+    config:
+      dir: "internal/ports/out/mocks"
+      filename: "mock_{{.InterfaceName | snakecase}}.go"
+      pkgname: "mocks"
+      all: true
