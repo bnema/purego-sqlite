@@ -1,6 +1,7 @@
 package core
 
 import (
+	"math"
 	"unsafe"
 
 	portin "github.com/bnema/purego-sqlite/internal/ports/in"
@@ -40,6 +41,9 @@ func OpenDB(capi portout.CAPI, dsn string) (*database, error) {
 
 // Prepare prepares a SQL statement for execution.
 func (db *database) Prepare(sql string) (portin.Stmt, error) {
+	if len(sql) > math.MaxInt32 {
+		return nil, &Error{Code: 18, Msg: "SQL string too long"} // SQLITE_TOOBIG = 18
+	}
 	var stmtPtr unsafe.Pointer
 	rc := db.capi.Sqlite3PrepareV2(
 		db.ptr,

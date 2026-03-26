@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"math"
 	"unsafe"
 
 	portin "github.com/bnema/purego-sqlite/internal/ports/in"
@@ -111,6 +112,9 @@ func (s *statement) bind(args []any) error {
 			if len(v) == 0 {
 				rc = s.db.capi.Sqlite3BindZeroblob(s.ptr, idx, 0)
 			} else {
+				if len(v) > math.MaxInt32 {
+					return fmt.Errorf("blob too large (%d bytes)", len(v))
+				}
 				rc = s.db.capi.Sqlite3BindBlob(s.ptr, idx, unsafe.Pointer(&v[0]), int32(len(v)), sqliteTransient())
 			}
 		default:

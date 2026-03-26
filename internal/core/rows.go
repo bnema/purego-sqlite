@@ -73,14 +73,18 @@ func (r *rows) Scan(dest ...any) error {
 		case *string:
 			*dp = columnText(capi, stmtPtr, col)
 		case *[]byte:
-			nbytes := capi.Sqlite3ColumnBytes(stmtPtr, col)
-			if nbytes == 0 || colType == sqliteNull {
+			if colType == sqliteNull {
 				*dp = nil
 			} else {
 				blobPtr := capi.Sqlite3ColumnBlob(stmtPtr, col)
-				buf := make([]byte, nbytes)
-				copy(buf, unsafe.Slice((*byte)(blobPtr), nbytes))
-				*dp = buf
+				nbytes := capi.Sqlite3ColumnBytes(stmtPtr, col)
+				if nbytes == 0 || blobPtr == nil {
+					*dp = nil
+				} else {
+					buf := make([]byte, nbytes)
+					copy(buf, unsafe.Slice((*byte)(blobPtr), nbytes))
+					*dp = buf
+				}
 			}
 		case *bool:
 			*dp = capi.Sqlite3ColumnInt64(stmtPtr, col) != 0
@@ -93,11 +97,15 @@ func (r *rows) Scan(dest ...any) error {
 			case sqliteText:
 				*dp = columnText(capi, stmtPtr, col)
 			case sqliteBlob:
-				nbytes := capi.Sqlite3ColumnBytes(stmtPtr, col)
 				blobPtr := capi.Sqlite3ColumnBlob(stmtPtr, col)
-				buf := make([]byte, nbytes)
-				copy(buf, unsafe.Slice((*byte)(blobPtr), nbytes))
-				*dp = buf
+				nbytes := capi.Sqlite3ColumnBytes(stmtPtr, col)
+				if nbytes == 0 || blobPtr == nil {
+					*dp = []byte(nil)
+				} else {
+					buf := make([]byte, nbytes)
+					copy(buf, unsafe.Slice((*byte)(blobPtr), nbytes))
+					*dp = buf
+				}
 			case sqliteNull:
 				*dp = nil
 			}
