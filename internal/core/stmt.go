@@ -2,7 +2,6 @@ package core
 
 import (
 	"fmt"
-	"math"
 	"unsafe"
 
 	portin "github.com/bnema/purego-sqlite/internal/ports/in"
@@ -97,11 +96,9 @@ func (s *statement) bind(args []any) error {
 		case int64:
 			rc = s.db.capi.Sqlite3BindInt64(s.ptr, idx, uintptr(v))
 		case float64:
-			bits := math.Float64bits(v)
-			rc = s.db.capi.Sqlite3BindDouble(s.ptr, idx, uintptr(bits))
+			rc = s.db.capi.Sqlite3BindDouble(s.ptr, idx, v)
 		case float32:
-			bits := math.Float64bits(float64(v))
-			rc = s.db.capi.Sqlite3BindDouble(s.ptr, idx, uintptr(bits))
+			rc = s.db.capi.Sqlite3BindDouble(s.ptr, idx, float64(v))
 		case bool:
 			var n int64
 			if v {

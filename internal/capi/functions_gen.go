@@ -88,7 +88,7 @@ var Sqlite3StmtExplain func(pStmt unsafe.Pointer, eMode int32) int32
 var Sqlite3StmtBusy func(arg0 unsafe.Pointer) int32
 var Sqlite3BindBlob func(arg0 unsafe.Pointer, arg1 uintptr, arg2 unsafe.Pointer, n int32, arg3 unsafe.Pointer) int32
 var Sqlite3BindBlob64 func(arg0 unsafe.Pointer, arg1 uintptr, arg2 unsafe.Pointer, sqlite3Uint64 uintptr, arg3 unsafe.Pointer) int32
-var Sqlite3BindDouble func(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32
+var Sqlite3BindDouble func(arg0 unsafe.Pointer, arg1 uintptr, arg2 float64) int32
 var Sqlite3BindInt func(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32
 var Sqlite3BindInt64 func(arg0 unsafe.Pointer, arg1 uintptr, sqlite3Int64 uintptr) int32
 var Sqlite3BindNull func(arg0 unsafe.Pointer, arg1 uintptr) int32

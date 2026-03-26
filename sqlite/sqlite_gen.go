@@ -3,6 +3,7 @@ package sqlite
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/bnema/purego-sqlite/internal/capi"
 	"github.com/bnema/purego-sqlite/internal/core"
@@ -24,17 +25,25 @@ type Rows = portin.Rows
 type Result = portin.Result
 
 // bridge is the singleton CAPI implementation, initialized by first Open call.
-var bridge portout.CAPI
+var (
+	bridge   portout.CAPI
+	initOnce sync.Once
+	initErr  error
+)
 
 // Open opens a SQLite database at the given path.
 func Open(dsn string) (DB, error) {
-	if bridge == nil {
+	initOnce.Do(func() {
 		handle, err := loader.Open()
 		if err != nil {
-			return nil, fmt.Errorf("sqlite: %w", err)
+			initErr = fmt.Errorf("sqlite: %w", err)
+			return
 		}
 		capi.Register(handle)
 		bridge = capi.NewBridge()
+	})
+	if initErr != nil {
+		return nil, initErr
 	}
 	return core.OpenDB(bridge, dsn)
 }

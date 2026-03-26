@@ -108,6 +108,11 @@ func (r *rows) Scan(dest ...any) error {
 	return nil
 }
 
+// Err returns the error, if any, that was encountered during iteration.
+func (r *rows) Err() error {
+	return r.lastErr
+}
+
 // Columns returns the column names for the result set.
 func (r *rows) Columns() ([]string, error) {
 	capi := r.stmt.db.capi

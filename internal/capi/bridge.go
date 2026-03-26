@@ -242,7 +242,7 @@ func (b *Bridge) Sqlite3BindBlob64(arg0 unsafe.Pointer, arg1 uintptr, arg2 unsaf
 	return Sqlite3BindBlob64(arg0, arg1, arg2, sqlite3Uint64, arg3)
 }
 
-func (b *Bridge) Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32 {
+func (b *Bridge) Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2 float64) int32 {
 	return Sqlite3BindDouble(arg0, arg1, arg2)
 }
 

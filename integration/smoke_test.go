@@ -128,6 +128,23 @@ func TestSmoke_MultipleRows(t *testing.T) {
 	assert.Equal(t, 100, vals[99])
 }
 
+func TestSmoke_Float64(t *testing.T) {
+	db, err := sql.Open("sqlite3", ":memory:")
+	require.NoError(t, err)
+	defer db.Close()
+
+	_, err = db.Exec("CREATE TABLE t (id INTEGER PRIMARY KEY, val REAL)")
+	require.NoError(t, err)
+
+	_, err = db.Exec("INSERT INTO t (val) VALUES (?)", 3.14159265358979)
+	require.NoError(t, err)
+
+	var val float64
+	err = db.QueryRow("SELECT val FROM t WHERE id = 1").Scan(&val)
+	require.NoError(t, err)
+	assert.InDelta(t, 3.14159265358979, val, 1e-10)
+}
+
 func TestSmoke_EnvOverride(t *testing.T) {
 	t.Setenv("SQLITE_LIB_PATH", "libsqlite3.so")
 	db, err := sql.Open("sqlite3", ":memory:")

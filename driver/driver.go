@@ -114,6 +114,9 @@ func (r *driverRows) Close() error {
 // Returns io.EOF when there are no more rows.
 func (r *driverRows) Next(dest []driver.Value) error {
 	if !r.rows.Next() {
+		if err := r.rows.Err(); err != nil {
+			return err
+		}
 		return io.EOF
 	}
 	// We cannot pass *driver.Value to core.Scan because driver.Value is a

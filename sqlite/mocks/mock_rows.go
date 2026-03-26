@@ -134,6 +134,50 @@ func (_c *MockRows_Columns_Call) RunAndReturn(run func() ([]string, error)) *Moc
 	return _c
 }
 
+// Err provides a mock function for the type MockRows
+func (_mock *MockRows) Err() error {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Err")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func() error); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockRows_Err_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Err'
+type MockRows_Err_Call struct {
+	*mock.Call
+}
+
+// Err is a helper method to define mock.On call
+func (_e *MockRows_Expecter) Err() *MockRows_Err_Call {
+	return &MockRows_Err_Call{Call: _e.mock.On("Err")}
+}
+
+func (_c *MockRows_Err_Call) Run(run func()) *MockRows_Err_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockRows_Err_Call) Return(err error) *MockRows_Err_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockRows_Err_Call) RunAndReturn(run func() error) *MockRows_Err_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Next provides a mock function for the type MockRows
 func (_mock *MockRows) Next() bool {
 	ret := _mock.Called()

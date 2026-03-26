@@ -9,7 +9,7 @@ var _ unsafe.Pointer
 type Bind interface {
 	Sqlite3BindBlob(arg0 unsafe.Pointer, arg1 uintptr, arg2 unsafe.Pointer, n int32, arg3 unsafe.Pointer) int32
 	Sqlite3BindBlob64(arg0 unsafe.Pointer, arg1 uintptr, arg2 unsafe.Pointer, sqlite3Uint64 uintptr, arg3 unsafe.Pointer) int32
-	Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32
+	Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2 float64) int32
 	Sqlite3BindInt(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32
 	Sqlite3BindInt64(arg0 unsafe.Pointer, arg1 uintptr, sqlite3Int64 uintptr) int32
 	Sqlite3BindNull(arg0 unsafe.Pointer, arg1 uintptr) int32

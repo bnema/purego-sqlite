@@ -735,7 +735,7 @@ func (_c *MockCAPI_Sqlite3BindBlob64_Call) RunAndReturn(run func(arg0 unsafe.Poi
 }
 
 // Sqlite3BindDouble provides a mock function for the type MockCAPI
-func (_mock *MockCAPI) Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32 {
+func (_mock *MockCAPI) Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2 float64) int32 {
 	ret := _mock.Called(arg0, arg1, arg2)
 
 	if len(ret) == 0 {
@@ -743,7 +743,7 @@ func (_mock *MockCAPI) Sqlite3BindDouble(arg0 unsafe.Pointer, arg1 uintptr, arg2
 	}
 
 	var r0 int32
-	if returnFunc, ok := ret.Get(0).(func(unsafe.Pointer, uintptr, uintptr) int32); ok {
+	if returnFunc, ok := ret.Get(0).(func(unsafe.Pointer, uintptr, float64) int32); ok {
 		r0 = returnFunc(arg0, arg1, arg2)
 	} else {
 		r0 = ret.Get(0).(int32)
@@ -759,12 +759,12 @@ type MockCAPI_Sqlite3BindDouble_Call struct {
 // Sqlite3BindDouble is a helper method to define mock.On call
 //   - arg0 unsafe.Pointer
 //   - arg1 uintptr
-//   - arg2 uintptr
+//   - arg2 float64
 func (_e *MockCAPI_Expecter) Sqlite3BindDouble(arg0 interface{}, arg1 interface{}, arg2 interface{}) *MockCAPI_Sqlite3BindDouble_Call {
 	return &MockCAPI_Sqlite3BindDouble_Call{Call: _e.mock.On("Sqlite3BindDouble", arg0, arg1, arg2)}
 }
 
-func (_c *MockCAPI_Sqlite3BindDouble_Call) Run(run func(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr)) *MockCAPI_Sqlite3BindDouble_Call {
+func (_c *MockCAPI_Sqlite3BindDouble_Call) Run(run func(arg0 unsafe.Pointer, arg1 uintptr, arg2 float64)) *MockCAPI_Sqlite3BindDouble_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 unsafe.Pointer
 		if args[0] != nil {
@@ -774,9 +774,9 @@ func (_c *MockCAPI_Sqlite3BindDouble_Call) Run(run func(arg0 unsafe.Pointer, arg
 		if args[1] != nil {
 			arg1 = args[1].(uintptr)
 		}
-		var arg2 uintptr
+		var arg2 float64
 		if args[2] != nil {
-			arg2 = args[2].(uintptr)
+			arg2 = args[2].(float64)
 		}
 		run(
 			arg0,
@@ -792,7 +792,7 @@ func (_c *MockCAPI_Sqlite3BindDouble_Call) Return(n int32) *MockCAPI_Sqlite3Bind
 	return _c
 }
 
-func (_c *MockCAPI_Sqlite3BindDouble_Call) RunAndReturn(run func(arg0 unsafe.Pointer, arg1 uintptr, arg2 uintptr) int32) *MockCAPI_Sqlite3BindDouble_Call {
+func (_c *MockCAPI_Sqlite3BindDouble_Call) RunAndReturn(run func(arg0 unsafe.Pointer, arg1 uintptr, arg2 float64) int32) *MockCAPI_Sqlite3BindDouble_Call {
 	_c.Call.Return(run)
 	return _c
 }
