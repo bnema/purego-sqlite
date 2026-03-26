@@ -3,9 +3,28 @@ package driver
 import (
 	"database/sql/driver"
 	"io"
+	"time"
 
 	"github.com/bnema/purego-sqlite/sqlite"
 )
+
+// sqliteTimeFormats are the datetime formats SQLite's date/time functions produce.
+// Ordered from most to least specific so the first match wins.
+var sqliteTimeFormats = []string{
+	"2006-01-02 15:04:05.999999999-07:00",
+	"2006-01-02T15:04:05.999999999-07:00",
+	"2006-01-02 15:04:05.999999999Z",
+	"2006-01-02T15:04:05.999999999Z",
+	"2006-01-02 15:04:05.999999999",
+	"2006-01-02T15:04:05.999999999",
+	"2006-01-02 15:04:05Z",
+	"2006-01-02T15:04:05Z",
+	"2006-01-02 15:04:05",
+	"2006-01-02T15:04:05",
+	"2006-01-02 15:04",
+	"2006-01-02T15:04",
+	"2006-01-02",
+}
 
 // Driver implements database/sql/driver.Driver.
 type Driver struct{}
@@ -131,16 +150,36 @@ func (r *driverRows) Next(dest []driver.Value) error {
 		return err
 	}
 	for i := range dest {
-		dest[i] = vals[i]
+		dest[i] = maybeParseTime(vals[i])
 	}
 	return nil
 }
 
-// driverValuesToAny converts a []driver.Value to []any.
+// maybeParseTime converts a string value to time.Time if it matches a known
+// SQLite datetime format. Non-string values and non-matching strings pass through.
+func maybeParseTime(v any) any {
+	s, ok := v.(string)
+	if !ok || len(s) < 10 { // "2006-01-02" is the shortest format
+		return v
+	}
+	for _, format := range sqliteTimeFormats {
+		if t, err := time.ParseInLocation(format, s, time.UTC); err == nil {
+			return t
+		}
+	}
+	return v
+}
+
+// driverValuesToAny converts a []driver.Value to []any, formatting time.Time
+// values as SQLite-compatible datetime strings.
 func driverValuesToAny(args []driver.Value) []any {
 	out := make([]any, len(args))
 	for i, v := range args {
-		out[i] = v
+		if t, ok := v.(time.Time); ok {
+			out[i] = t.UTC().Format("2006-01-02 15:04:05.999999999")
+		} else {
+			out[i] = v
+		}
 	}
 	return out
 }
