@@ -116,11 +116,21 @@ func (r *driverRows) Next(dest []driver.Value) error {
 	if !r.rows.Next() {
 		return io.EOF
 	}
+	// We cannot pass *driver.Value to core.Scan because driver.Value is a
+	// distinct named type (not a type alias) in Go 1.22+, so *driver.Value
+	// does not match *any in a type switch. Use intermediate *any variables.
+	vals := make([]any, len(dest))
 	ptrs := make([]any, len(dest))
 	for i := range dest {
-		ptrs[i] = &dest[i]
+		ptrs[i] = &vals[i]
 	}
-	return r.rows.Scan(ptrs...)
+	if err := r.rows.Scan(ptrs...); err != nil {
+		return err
+	}
+	for i := range dest {
+		dest[i] = vals[i]
+	}
+	return nil
 }
 
 // driverValuesToAny converts a []driver.Value to []any.

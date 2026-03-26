@@ -19,8 +19,12 @@ type database struct {
 // OpenDB opens a SQLite database at the given DSN (file path or ":memory:").
 func OpenDB(capi portout.CAPI, dsn string) (*database, error) {
 	db := &database{capi: capi}
-	flags := int32(sqliteOpenReadWrite | sqliteOpenCreate)
-	rc := capi.Sqlite3OpenV2(dsn, unsafe.Pointer(&db.ptr), flags, "")
+	// Use sqlite3_open rather than sqlite3_open_v2 because purego maps Go
+	// string "" to a non-NULL char* "\0", but sqlite3_open_v2 requires a
+	// real NULL pointer for the zVfs parameter to select the default VFS.
+	// sqlite3_open opens in read-write + create mode by default, which is
+	// the behaviour we want.
+	rc := capi.Sqlite3Open(dsn, unsafe.Pointer(&db.ptr))
 	if rc != sqliteOK {
 		// If open partially succeeded, there might be a handle to extract
 		// an error message from, but we close it anyway.
