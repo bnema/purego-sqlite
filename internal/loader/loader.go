@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ebitengine/purego"
+	"github.com/bnema/purego"
 )
 
 // Open loads libsqlite3 and returns the dlopen handle.

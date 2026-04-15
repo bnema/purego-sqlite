@@ -2,7 +2,7 @@
 package capi
 
 import (
-	"github.com/ebitengine/purego"
+	"github.com/bnema/purego"
 )
 
 // Sqlite3ConfigAddr symbol address, loaded by Register.

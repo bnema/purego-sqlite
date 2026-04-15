@@ -3,7 +3,7 @@ module github.com/bnema/purego-sqlite
 go 1.26.1
 
 require (
-	github.com/ebitengine/purego v0.10.0
+	github.com/bnema/purego v0.11.0-bnema.2
 	github.com/stretchr/testify v1.11.1
 )
 
@@ -13,5 +13,3 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/ebitengine/purego => github.com/bnema/purego v0.0.0-20260323095903-91aa177a2704

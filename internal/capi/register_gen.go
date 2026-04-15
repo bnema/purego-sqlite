@@ -2,7 +2,7 @@
 package capi
 
 import (
-	"github.com/ebitengine/purego"
+	"github.com/bnema/purego"
 )
 
 // tryRegisterLibFunc registers a C function symbol if it exists in the library.

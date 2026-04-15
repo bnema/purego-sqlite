@@ -1,6 +1,6 @@
 # purego-sqlite
 
-Go bindings for [SQLite](https://sqlite.org/) via [purego](https://github.com/ebitengine/purego) instead of cgo.
+Go bindings for [SQLite](https://sqlite.org/) via [purego](https://github.com/bnema/purego) instead of cgo.
 
 Linux only. `CGO_ENABLED=0`.
 
